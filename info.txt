@@ -1,5 +1,5 @@
 == Description ==
-<h3>What is Beefy Slider</h3><
+<h3>What is Beefy Slider</h3>
 
 Beefy Slider is a jQuery slider that is great for showing multiple images on your site and is maybe the tastiest slider you have ever tried.
 
@@ -8,6 +8,8 @@ Beefy Slider comes with a number of options including custom links, custom text 
 Beefy Slider is beautiful responsive as well and supports up to 20 images.
 
 Sounds tasty? <strong>Buy Beefy! :)</strong>
+
+<strong>Beefy Slider only works in the Content Area</strong>
 
 <h3>Support</h3>
 
