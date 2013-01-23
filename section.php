@@ -7,7 +7,7 @@
 	Version: 1.0
 	Description: Beefy Slider is a great slider to show images on your site. Beefy Slider is beautifully responsive, comes with color control and supports up to 20 images of your choice. Sounds tasty? Buy Beefy ;)
 	Class Name: PageLinesBeefy
-	Workswith: templates
+	Workswith: main
 */
 
 /**
