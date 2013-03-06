@@ -4,7 +4,7 @@
 	Author: Aleksander Hansson
 	Author URI: http://ahansson.com
 	Demo: http://beefy.ahansson.com
-	Version: 1.0
+	Version: 1.1
 	Description: Beefy Slider is a great slider to show images on your site. Beefy Slider is beautifully responsive, comes with color control and supports up to 20 images of your choice. Sounds tasty? Buy Beefy ;)
 	Class Name: PageLinesBeefy
 	Workswith: main
@@ -66,14 +66,14 @@ function section_persistent(){
 	?>
 		<script type="text/javascript">
 			jQuery(document).ready(function($){
-				jQuery('.beefSlider').beefSlider(
+				$('.beefSlider').beefSlider(
 					function()
 					{
-						jQuery(this).find('div').fadeIn(100);
+						$(this).find('div').fadeIn(100);
 					},
 					function()
 					{
-						jQuery(this).find('div').fadeOut(100);
+						$(this).find('div').fadeOut(100);
 					}
 				);
 			})
@@ -198,7 +198,7 @@ function section_persistent(){
 			$array['beefy_slides'] = array(
 				'type' 			=> 'count_select',
 				'count_start'	=> 4, 
-				'count_num'		=> 20,
+				'count_number'	=> 20,
 				'default'		=> '4',
 				'inputlabel' 	=> __( 'Number of Images to Configure', 'pagelines' ),
 				'title' 		=> __( 'Number of images', 'pagelines' ),
