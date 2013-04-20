@@ -4,10 +4,12 @@
 	Author: Aleksander Hansson
 	Author URI: http://ahansson.com
 	Demo: http://beefy.ahansson.com
-	Version: 1.1
+	Version: 2.0
 	Description: Beefy Slider is a great slider to show images on your site. Beefy Slider is beautifully responsive, comes with color control and supports up to 20 images of your choice. Sounds tasty? Buy Beefy ;)
-	Class Name: PageLinesBeefy
-	Workswith: main
+	Class Name: Beefy
+	Workswith: templates, main
+	Cloning:true
+
 */
 
 /**
@@ -19,271 +21,288 @@
 
 
 
-class PageLinesBeefy extends PageLinesSection {
-
-/*
-
-function section_persistent(){
-
-	add_filter( 'pless_vars', 'pl_counter_less');
-
-	function pl_beefy_less( $constants ){
-		
-		$countdown_background_color = (ploption('countdown-background-color')) ? ploption('countdown-background-color') : '#1568AD';
-		$countdown_label_color = (ploption('countdown-label-color')) ? ploption('countdown-label-color') : '#000000';
-		$countdown_text_color = (ploption('countdown-text-color')) ? ploption('countdown-text-color') : '#ffffff';
-	
-	
-		$newvars = array(
-		
-			'countdownbackgroundcolor' => $countdown_background_color ,
-			'countdownlabelcolor' => $countdown_label_color ,
-			'countdowntextcolor' => $countdown_text_color
-	
-		);
-	
-		$lessvars = array_merge($newvars, $constants);
-		return $lessvars;
-	}
-
-}
-*/
+class Beefy extends PageLinesSection {
 
 	var $default_limit = 4;
-	
+
 	function section_styles(){
-				
+
 		wp_enqueue_script('jquery');
-		
-		wp_enqueue_script('pl-beefy-script', $this->base_url.'/js/jQuery.beefSlider.js');
+
+		wp_enqueue_script('pl-beefy-script', $this->base_url.'/js/jquery.simplyscroll.js');
 
 	}
-	
+
 	function section_head( $clone_id ) {
-	
-	$prefix = ($clone_id != '') ? '.clone_'.$clone_id : '';
-	
-	?>
-		<script type="text/javascript">
-			jQuery(document).ready(function($){
-				$('.beefSlider').beefSlider(
-					function()
-					{
-						$(this).find('div').fadeIn(100);
-					},
-					function()
-					{
-						$(this).find('div').fadeOut(100);
-					}
-				);
-			})
-		</script>
-	<?php
-	
+
+		$prefix = ($clone_id != '') ? 'Clone_'.$clone_id : '';
+
+		$speed = (ploption('beefy_speed', $this->oset)) ? (ploption('beefy_speed', $this->oset)) : '1';
+
+		if ( ploption( 'beefy_direction', $this->oset ) == 'backwards') {
+			$direction = 'backwards';
+		} else {
+			$direction = 'forwards';
+		}
+
+		if ( ploption( 'beefy_hover', $this->oset ) == 'n') {
+			$hover = 'false';
+		} else {
+			$hover = 'true';
+		}
+
+		?>
+			<script type="text/javascript">
+				jQuery(document).ready(function($){
+					$("#scroller<?php echo $prefix; ?>").simplyScroll({
+						direction: '<?php echo $direction; ?>',
+						speed: <?php echo $speed; ?>,
+						pauseOnHover: <?php echo $hover; ?>
+					});
+				});
+			</script>
+		<?php
+
 	}
 
 	function section_template( $clone_id ) {
-				
-		$div_style = sprintf('style="height:%s;"', (ploption('beefy_img_height', $this->oset)) ? (ploption('beefy_img_height', $this->oset)) : '300px');
-				
+
+		$prefix = ($clone_id != '') ? 'Clone_'.$clone_id : '';
+
+		$height = (ploption('beefy_img_height', $this->oset)) ? (ploption('beefy_img_height', $this->oset)) : '200px';
+
+		$width = (ploption('beefy_img_width', $this->oset)) ? (ploption('beefy_img_width', $this->oset)) : '290px';
+
 		?>
-		<div class="beefSlider" <?php echo $div_style;?> >
-			<div class="beefSliderInner">	
-				<ul>	
+				<ul id="scroller<?php echo $prefix; ?>" class="scroller" style="height:<?php echo $height; ?>;">
 					<?php
-					
+
 					$slides = (ploption('beefy_slides', $this->oset)) ? ploption('beefy_slides', $this->oset) : $this->default_limit;
-					
+
 					$output = '';
 					for($i = 1; $i <= $slides; $i++){
-					
+
 						if(ploption('beefy_image_'.$i, $this->oset)){
-							
+
 							$the_text = ploption('beefy_text_'.$i, $this->tset);
-			
+
 							$img_alt = ploption('beefy_alt_'.$i,$this->tset);
-							
-							$img_style = sprintf('style="height:%s; width:%s;"', ploption('beefy_img_height', $this->oset) ? ploption('beefy_img_height', $this->oset) : '300px' , ploption('beefy_img_width', $this->oset) ? ploption('beefy_img_width', $this->oset) : '400px' );
-											
-							$div_style = sprintf('style="background-color:%s;"', ploption('beefy_color_div', $this->oset) ? ploption('beefy_color_div', $this->oset) : '');
-							$span_style = sprintf('style="color:%s;"', ploption('beefy_color_span', $this->oset) ? ploption('beefy_color_span', $this->oset) : '');
-									
+
+							$div_style = sprintf('style="background-color:%s;"', ploption('beefy_color_div', $this->oset) ? ploption('beefy_color_div', $this->oset) : '#223a5f');
+
+							$span_style = sprintf('style="color:%s;"', ploption('beefy_color_span', $this->oset) ? ploption('beefy_color_span', $this->oset) : '#ffffff');
+
 							$text = ($the_text) ? sprintf('<div %s><span %s>%s</span></div>', $div_style, $span_style, $the_text) : '';
-							
-							$img = sprintf('<img src="%s" alt="%s" %s/>', ploption( 'beefy_image_'.$i, $this->tset ),$img_alt, $img_style );
-							
-							$slide = (ploption('beefy_link_'.$i, $this->oset)) ? sprintf('<a href="%s">%s</a>', ploption('beefy_link_'.$i, $this->oset), $img ) : $img;						
+
+							$img = sprintf('<img src="%s" alt="%s" width="%s" height="%s"/>', ploption( 'beefy_image_'.$i, $this->tset ),$img_alt, $width, $height );
+
+							$slide = (ploption('beefy_link_'.$i, $this->oset)) ? sprintf('<a href="%s">%s</a>', ploption('beefy_link_'.$i, $this->oset), $img ) : $img;
 							$output .= sprintf('<li>%s %s</li>',$slide, $text);
 						}
 					}
-					
+
 					if($output == ''){
 						$this->do_defaults();
 					} else {
 						echo $output;
 					}
-					
+
 					?>
 				</ul>
-			</div>
-		</div>
-						
-	<?php }
-	
+
+		<?php
+	}
+
 	function do_defaults(){
-		
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/1.png', 
-			'height:350px; width:400px;',
+
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/1.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the first image'
 		);
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/2.png', 
-			'height:350px; width:400px;',
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/2.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the second image'
 		);
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/3.png', 
-			'height:350px; width:400px;',
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/3.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the third image'
 		);
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/4.png', 
-			'height:350px; width:400px;',
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/4.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the fourth image'
 		);
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/5.png', 
-			'height:350px; width:400px;',
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/5.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the fifth image'
 		);
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/6.png', 
-			'height:350px; width:400px;',
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/6.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the sixth image'
 		);
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/7.png', 
-			'height:350px; width:400px;',
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/7.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the seventh image'
 		);
-		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>', 
-			$this->base_url.'/img/8.png', 
-			'height:350px; width:400px;',
+		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
+			$this->base_url.'/img/8.png',
+			'height:200px; width:290px;',
 			'background-color:#223a5f;',
 			'color:#ffffff;',
 			'This is the eighth image'
 		);
 	}
-	
+
 	function section_optionator( $settings ){
 		$settings = wp_parse_args( $settings, $this->optionator_default );
-		
-			$array = array(); 
-			
+
+			$array = array();
+
 			$array['beefy_slides'] = array(
 				'type' 			=> 'count_select',
-				'count_start'	=> 4, 
+				'count_start'	=> 4,
 				'count_number'	=> 20,
 				'default'		=> '4',
-				'inputlabel' 	=> __( 'Number of Images to Configure', 'pagelines' ),
-				'title' 		=> __( 'Number of images', 'pagelines' ),
-				'shortexp' 		=> __( 'Enter the number of Beefy slides. <strong>Minimum is 4</strong>', 'pagelines' ),
-				'exp' 			=> __( "This number will be used to generate slides and option setup.", 'pagelines' ),
-		
+				'inputlabel' 	=> __( 'Number of Images to Configure', 'Beefy' ),
+				'title' 		=> __( 'Number of images', 'Beefy' ),
+				'shortexp' 		=> __( 'Enter the number of Beefy slides. <strong>Minimum is 4</strong>', 'Beefy' ),
+				'exp' 			=> __( "This number will be used to generate slides and option setup.", 'Beefy' ),
+
 			);
-			
-				$array['beefy_colors'] = array(
-					'type'     => 'color_multi',
-					'title'     =>  __('Styling options', 'pagelines'),
-					'selectvalues'   => array(
-						'beefy_color_div' => array(
-							'default'          => '',
-							'type'              => 'color_picker',
-							'inputlabel'  =>  __('Pick text background color', 'pagelines'),
-	    		    	),
-	    		    	'beefy_color_span' => array(
-	    		    		'default'          => '',
-	    					'type'              => 'color_picker',
-	    		    		'inputlabel'  =>  __('Pick text color', 'pagelines'),
-	    		    	),
-				    ),
-				);
-				
-				$array['beefy_dimensions'] = array(
-					'type'     => 'multi_option',
-					'title'     =>  __('Styling options', 'pagelines'),
-					'selectvalues'   => array(
-	    		    	'beefy_img_height' =>  array(
-	    		    		'default'   =>  '',
-	    		    		'type'    =>  'text',
-	    		    		'inputlabel'  =>  __('Choose the height for your images. For example: <strong>350px</strong>', 'pagelines'),
-	    		    	),
-	    		    	'beefy_img_width' =>  array(
-	    		    		'default'   =>  '',
-	    		    		'type'    =>  'text',
-	    		    		'inputlabel'  =>  __('Choose the width for your images. For example: <strong>400px</strong>', 'pagelines'),
-	    		    	),
-				    ),
-				);
-			
+
+			$array['beefy_speed']  = array(
+				'title'   => __( 'Scrolling speed?', 'Beefy' ),
+				'inputlabel' => __('How fast should Beefy scroll through images? (1 is slow, 5 is fast)', 'Beefy'),
+				'type' => 'select',
+				'default' => '1',
+				'selectvalues' => array(
+					'1'   => array( 'name' => __('1'	, 'Beefy' )),
+					'2'   => array( 'name' => __('2'	, 'Beefy' )),
+					'3'   => array( 'name' => __('3'	, 'Beefy' )),
+					'4'   => array( 'name' => __('4'	, 'Beefy' )),
+					'5'   => array( 'name' => __('5'	, 'Beefy' )),
+				),
+			);
+
+			$array['beefy_hover']  = array(
+				'title'   => __( 'Pause on hover?', 'Beefy' ),
+				'inputlabel' => __('Pause scroll on hover? (Default: Yes)', 'Beefy'),
+				'type' => 'select',
+				'selectvalues' => array(
+					'y'   => array( 'name' => __('Yes'	, 'Beefy' )),
+					'n'   => array( 'name' => __('No'	, 'Beefy' )),
+				),
+			);
+
+			$array['beefy_direction']  = array(
+				'title'   => __( 'Direction?', 'Beefy' ),
+				'inputlabel' => __('Forward or backwards? (Default: Yes)', 'Beefy'),
+				'type' => 'select',
+				'selectvalues' => array(
+					'forward'   => array( 'name' => __('Forward'	, 'Beefy' )),
+					'backwards'   => array( 'name' => __('Backwards'	, 'Beefy' )),
+				),
+			);
+
+			$array['beefy_colors'] = array(
+				'type'     => 'color_multi',
+				'title'     =>  __('Styling options', 'Beefy'),
+				'selectvalues'   => array(
+					'beefy_color_div' => array(
+						'default'          => '',
+						'type'              => 'color_picker',
+						'inputlabel'  =>  __('Pick text background color', 'Beefy'),
+	    		   	),
+	    		   	'beefy_color_span' => array(
+	    		   		'default'          => '',
+	    				'type'              => 'color_picker',
+	    		   		'inputlabel'  =>  __('Pick text color', 'Beefy'),
+	    		   	),
+				),
+			);
+
+			$array['beefy_dimensions'] = array(
+				'type'     => 'multi_option',
+				'title'     =>  __('Styling options', 'Beefy'),
+				'selectvalues'   => array(
+	    			'beefy_img_height' =>  array(
+	    		    	'default'   =>  '',
+	    		    	'type'    =>  'text',
+	    		    	'inputlabel'  =>  __('Choose the height for your images. For example: <strong>350px</strong>', 'Beefy'),
+	    		    ),
+	    		    'beefy_img_width' =>  array(
+	    		    	'default'   =>  '',
+	    		    	'type'    =>  'text',
+	    		    	'inputlabel'  =>  __('Choose the width for your images. For example: <strong>400px</strong>', 'Beefy'),
+	    		    ),
+				),
+			);
+
+
+
 			global $post_ID;
-			
+
 			$oset = array('post_id' => $post_ID, 'clone_id' => $settings['clone_id'], 'type' => $settings['type']);
-			
+
 			$slides = (ploption('beefy_slides', $oset)) ? ploption('beefy_slides', $oset) : $this->default_limit;
-			
+
 			for($i = 1; $i <= $slides; $i++){
-				
-				
+
+
 				$array['beefy_slide_'.$i] = array(
 					'type' 			=> 'multi_option',
 					'selectvalues' => array(
 						'beefy_image_'.$i 	=> array(
-							'inputlabel' 	=> __( 'Slide Image', 'pagelines' ), 
+							'inputlabel' 	=> __( 'Slide Image', 'Beefy' ),
 							'type'			=> 'image_upload'
 						),
 						'beefy_alt_'.$i 	=> array(
-							'inputlabel'	=> __( 'Image ALT tag', 'pagelines' ), 
+							'inputlabel'	=> __( 'Image ALT tag', 'Beefy' ),
 							'type'			=> 'text'
-						),	
+						),
 						'beefy_link_'.$i 	=> array(
-							'inputlabel'	=> __( 'Slide Link', 'pagelines' ), 
+							'inputlabel'	=> __( 'Slide Link', 'Beefy' ),
 							'type'			=> 'text'
 						),
 						'beefy_text_'.$i 	=> array(
-							'inputlabel'	=> __( 'Slide Text', 'pagelines' ), 
+							'inputlabel'	=> __( 'Slide Text', 'Beefy' ),
 							'type'			=> 'text'
-						),	
+						),
 					),
-					'title' 		=> __( 'Beefy Slide ', 'pagelines' ) . $i,
-					'shortexp' 		=> __( 'Setup options for slide number ', 'pagelines' ) . $i,
-					'exp'			=> __( 'For best results all images in the slider should have the same dimensions.', 'pagelines')
+					'title' 		=> __( 'Beefy Slide ', 'Beefy' ) . $i,
+					'shortexp' 		=> __( 'Setup options for slide number ', 'Beefy' ) . $i,
+					'exp'			=> __( 'For best results all images in the slider should have the same dimensions.', 'Beefy')
 				);
-				
+
 			}
-				
-			
+
+
 
 			$metatab_settings = array(
-					'id' 		=> 'beefy_options',
-					'name' 		=> __( 'Beefy', 'pagelines' ),
-					'icon' 		=> $this->icon, 
-					'clone_id'	=> $settings['clone_id'], 
+				'id' 		=> 'beefy_options',
+					'name' 		=> 'Beefy',
+					'icon' 		=> $this->icon,
+					'clone_id'	=> $settings['clone_id'],
 					'active'	=> $settings['active']
 				);
 

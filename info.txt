@@ -9,13 +9,19 @@ Beefy Slider is beautiful responsive as well and supports up to 20 images.
 
 Sounds tasty? <strong>Buy Beefy! :)</strong>
 
-<strong>Beefy Slider only works in the Content Area</strong>
-
 <h3>Support</h3>
 
 Please do not leave a review as a support question, they are for reviews. I am not notified of these reviews, and I have no way to respond to you. Please <strong>do not email me for support</strong>, because you will not receive a reply. If you need assistance, click the link in the box below - this link leads you to the forums where you can get support. <strong>Thanks!</strong>
 
 == Changelog ==
+
+= 2.0 =
+* Rebuild the code
+* Now supports cloning
+* Now works in template area
+* Removed hover effect
+* Added control over slide speed
+* Better support for touch devices
 
 = 1.0 =
 * Initial Release
