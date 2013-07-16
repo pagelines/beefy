@@ -15,6 +15,9 @@ Please do not leave a review as a support question, they are for reviews. I am n
 
 == Changelog ==
 
+= 2.1 =
+* Ready for DMS
+
 = 2.0 =
 * Rebuild the code
 * Now supports cloning
