@@ -33,7 +33,9 @@ class Beefy extends PageLinesSection {
 
 	}
 
-	function section_head( $clone_id ) {
+	function section_head() {
+
+		$clone_id = $this->get_the_id();
 
 		$prefix = ($clone_id != '') ? 'Clone_'.$clone_id : '';
 
