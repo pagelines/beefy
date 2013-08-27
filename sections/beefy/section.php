@@ -4,7 +4,6 @@
 	Author: Aleksander Hansson
 	Author URI: http://ahansson.com
 	Demo: http://beefy.ahansson.com
-	Version: 2.1
 	Description: Beefy Slider is a great slider to show images on your site. Beefy Slider is beautifully responsive, comes with color control and supports up to 20 images of your choice. Sounds tasty? Buy Beefy ;)
 	Class Name: Beefy
 	Workswith: templates, main
@@ -93,9 +92,9 @@ class Beefy extends PageLinesSection {
 
 								$img_alt = $this->opt('beefy_alt_'.$i,$this->tset);
 
-								$div_style = sprintf('style="background-color:#%s;"', $this->opt('beefy_color_div', $this->oset) ? $this->opt('beefy_color_div', $this->oset) : '#223a5f');
+								$div_style = sprintf('style="background-color:%s;"', $this->opt('beefy_color_div', $this->oset) ? $this->opt('beefy_color_div', $this->oset) : '#223a5f');
 
-								$span_style = sprintf('style="color:#%s;"', $this->opt('beefy_color_span', $this->oset) ? $this->opt('beefy_color_span', $this->oset) : '#ffffff');
+								$span_style = sprintf('style="color:%s;"', $this->opt('beefy_color_span', $this->oset) ? $this->opt('beefy_color_span', $this->oset) : '#ffffff');
 
 								$text = ($the_text) ? sprintf('<div %s><span data-sync="beefy_text_%s" %s>%s</span></div>', $div_style, $i, $span_style, $the_text) : '';
 
@@ -128,50 +127,50 @@ class Beefy extends PageLinesSection {
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/1.png',
 			'height:200px; width:290px;',
-			sprintf('background-color:#%s;', $backgroundcolor),
-			sprintf('color:#%s;', $color),
+			sprintf('background-color:%s;', $backgroundcolor),
+			sprintf('color:%s;', $color),
 			'This is the first image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/2.png',
 			'height:200px; width:290px;',
-			sprintf('background-color:#%s;', $backgroundcolor),
-			sprintf('color:#%s;', $color),
+			sprintf('background-color:%s;', $backgroundcolor),
+			sprintf('color:%s;', $color),
 			'This is the second image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/3.png',
 			'height:200px; width:290px;',
-			sprintf('background-color:#%s;', $backgroundcolor),
-			sprintf('color:#%s;', $color),
+			sprintf('background-color:%s;', $backgroundcolor),
+			sprintf('color:%s;', $color),
 			'This is the third image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/4.png',
 			'height:200px; width:290px;',
-			sprintf('background-color:#%s;', $backgroundcolor),
-			sprintf('color:#%s;', $color),
+			sprintf('background-color:%s;', $backgroundcolor),
+			sprintf('color:%s;', $color),
 			'This is the fourth image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/5.png',
 			'height:200px; width:290px;',
-			sprintf('background-color:#%s;', $backgroundcolor),
-			sprintf('color:#%s;', $color),
+			sprintf('background-color:%s;', $backgroundcolor),
+			sprintf('color:%s;', $color),
 			'This is the fifth image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/6.png',
 			'height:200px; width:290px;',
-			sprintf('background-color:#%s;', $backgroundcolor),
-			sprintf('color:#%s;', $color),
+			sprintf('background-color:%s;', $backgroundcolor),
+			sprintf('color:%s;', $color),
 			'This is the sixth image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/7.png',
 			'height:200px; width:290px;',
-			sprintf('background-color:#%s;', $backgroundcolor),
-			sprintf('color:#%s;', $color),
+			sprintf('background-color:%s;', $backgroundcolor),
+			sprintf('color:%s;', $color),
 			'This is the seventh image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
