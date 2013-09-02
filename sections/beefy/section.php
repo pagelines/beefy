@@ -8,15 +8,8 @@
 	Class Name: Beefy
 	Workswith: templates, main
 	Cloning:true
-	V3: true
+	Filter: slider, gallery
 */
-
-/**
- * PageLines Beefy Section
- *
- * @package PageLines Framework
- * @author Aleksander Hansson
- */
 
 class Beefy extends PageLinesSection {
 
@@ -26,10 +19,14 @@ class Beefy extends PageLinesSection {
 
 		wp_enqueue_script('jquery');
 
-		wp_enqueue_script('pl-beefy-script', $this->base_url.'/js/jquery.simplyscroll.js');
+		wp_enqueue_script('beefy', $this->base_url.'/js/jquery.carouFredSel-6.2.1-packed.js');
+
+		wp_enqueue_script('jquery-mousewheel', $this->base_url.'/js/jquery.mousewheel.min.js');
+		wp_enqueue_script('jquery-touchswipe', $this->base_url.'/js/jquery.touchSwipe.min.js');
+		wp_enqueue_script('jquery-transit', $this->base_url.'/js/jquery.transit.min.js');
+		wp_enqueue_script('jquery-ba-throttle-debounce', $this->base_url.'/js/jquery.ba-throttle-debounce.min.js');
 
 	}
-
 
 	function section_head() {
 
@@ -37,28 +34,43 @@ class Beefy extends PageLinesSection {
 
 		$prefix = ($clone_id != '') ? 'Clone_'.$clone_id : '';
 
-		$speed = ($this->opt('beefy_speed', $this->oset)) ? ($this->opt('beefy_speed', $this->oset)) : '1';
+		$speed = ($this->opt('beefy_speed', $this->oset)) ? ($this->opt('beefy_speed', $this->oset)) : '50000';
 
 		if ( $this->opt( 'beefy_direction', $this->oset ) == 'backwards') {
-			$direction = 'backwards';
+			$direction = 'left';
 		} else {
-			$direction = 'forwards';
+			$direction = 'right';
 		}
 
 		if ( $this->opt( 'beefy_hover', $this->oset ) == 'n') {
-			$hover = 'false';
+			$hover = '';
 		} else {
-			$hover = 'true';
+			$hover = ', pauseOnHover    : "immediate"';
 		}
+
+		$height = ($this->opt('beefy_img_height', $this->oset)) ? ($this->opt('beefy_img_height', $this->oset)) : '350px';
+
 
 		?>
 			<script type="text/javascript">
-				jQuery(document).ready(function($){
-					$("#scroller<?php echo $prefix; ?>").simplyScroll({
-						direction: '<?php echo $direction; ?>',
-						speed: <?php echo $speed; ?>,
-						pauseOnHover: <?php echo $hover; ?>
+				jQuery(document).ready(function () {
+
+					jQuery("#scroller<?php echo $prefix; ?> ul").carouFredSel({
+						auto : {
+							easing: "linear",
+							duration: <?php echo $speed; ?>,
+							timeoutDuration : 0
+							<?php echo $hover; ?>
+						},
+						width: "100%",
+						items 	: {
+							visible: 4,
+							height: "<?php echo $height; ?>"
+						},
+						direction : "<?php echo $direction; ?>"
+
 					});
+
 				});
 			</script>
 		<?php
@@ -71,49 +83,50 @@ class Beefy extends PageLinesSection {
 
 		$prefix = ($clone_id != '') ? 'Clone_'.$clone_id : '';
 
-		$height = ($this->opt('beefy_img_height', $this->oset)) ? ($this->opt('beefy_img_height', $this->oset)) : '200px';
+		$height = ($this->opt('beefy_img_height', $this->oset)) ? ($this->opt('beefy_img_height', $this->oset)) : '350px';
 
 		$width = ($this->opt('beefy_img_width', $this->oset)) ? ($this->opt('beefy_img_width', $this->oset)) : 'auto';
 
 		?>
 
-				<ul id="scroller<?php echo $prefix; ?>" class="scroller" style="height:<?php echo $height; ?>;">
+				<div id="scroller<?php echo $prefix; ?>" class="scroller">
+					<ul>
+						<?php
 
-					<?php
+							$slides = ($this->opt('beefy_slides', $this->oset)) ? $this->opt('beefy_slides', $this->oset) : $this->default_limit;
 
-						$slides = ($this->opt('beefy_slides', $this->oset)) ? $this->opt('beefy_slides', $this->oset) : $this->default_limit;
+							$output = '';
+							for($i = 1; $i <= $slides; $i++){
 
-						$output = '';
-						for($i = 1; $i <= $slides; $i++){
+								if($this->opt('beefy_image_'.$i, $this->oset)){
 
-							if($this->opt('beefy_image_'.$i, $this->oset)){
+									$the_text = $this->opt('beefy_text_'.$i, $this->tset);
 
-								$the_text = $this->opt('beefy_text_'.$i, $this->tset);
+									$img_alt = $this->opt('beefy_alt_'.$i,$this->tset);
 
-								$img_alt = $this->opt('beefy_alt_'.$i,$this->tset);
+									$div_style = sprintf('style="background-color:%s;"', pl_hashify($this->opt('beefy_color_div', $this->oset)) ? pl_hashify($this->opt('beefy_color_div', $this->oset)) : '#223a5f');
 
-								$div_style = sprintf('style="background-color:%s;"', $this->opt('beefy_color_div', $this->oset) ? $this->opt('beefy_color_div', $this->oset) : '#223a5f');
+									$span_style = sprintf('style="color:%s;"', pl_hashify($this->opt('beefy_color_span', $this->oset)) ? pl_hashify($this->opt('beefy_color_span', $this->oset)) : '#ffffff');
 
-								$span_style = sprintf('style="color:%s;"', $this->opt('beefy_color_span', $this->oset) ? $this->opt('beefy_color_span', $this->oset) : '#ffffff');
+									$text = ($the_text) ? sprintf('<div %s><span data-sync="beefy_text_%s" %s>%s</span></div>', $div_style, $i, $span_style, $the_text) : '';
 
-								$text = ($the_text) ? sprintf('<div %s><span data-sync="beefy_text_%s" %s>%s</span></div>', $div_style, $i, $span_style, $the_text) : '';
+									$img = sprintf('<img data-sync="beefy_image_%s" src="%s" alt="%s" style="height:%s; width:%s;"/>', $i, $this->opt( 'beefy_image_'.$i, $this->tset ),$img_alt, $height, $width );
 
-								$img = sprintf('<img data-sync="beefy_image_%s" src="%s" alt="%s" style="height:%s; width:%s;"/>', $i, $this->opt( 'beefy_image_'.$i, $this->tset ),$img_alt, $height, $width );
-
-								$slide = ($this->opt('beefy_link_'.$i, $this->oset)) ? sprintf('<a href="%s">%s</a>', $this->opt('beefy_link_'.$i, $this->oset), $img ) : $img;
-								$output .= sprintf('<li>%s %s</li>',$slide, $text);
+									$slide = ($this->opt('beefy_link_'.$i, $this->oset)) ? sprintf('<a href="%s">%s</a>', $this->opt('beefy_link_'.$i, $this->oset), $img ) : $img;
+									$output .= sprintf('<li>%s %s</li>',$slide, $text);
+								}
 							}
-						}
 
-						if($output == ''){
-							$this->do_defaults();
-						} else {
-							echo $output;
-						}
+							if($output == ''){
+								$this->do_defaults();
+							} else {
+								echo $output;
+							}
 
-					?>
-
-				</ul>
+						?>
+					</ul>
+					<div class="beefy-fix"></div>
+				</div>
 
 		<?php
 	}
@@ -126,57 +139,57 @@ class Beefy extends PageLinesSection {
 
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/1.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the first image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/2.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the second image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/3.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the third image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/4.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the fourth image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/5.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the fifth image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/6.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the sixth image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/7.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the seventh image'
 		);
 		printf('<li><img src="%s" style="%s" /><div style="%s"><span style="%s"><strong>%s</strong></span></div></li>',
 			$this->base_url.'/img/8.png',
-			'height:200px; width:290px;',
-			sprintf('background-color:%s;', $backgroundcolor),
+			'height:350px; width:auto;',
+			sprintf('background-color:%s;', pl_hashify($backgroundcolor)),
 			sprintf('color:%s;', $color),
 			'This is the eighth image'
 		);
@@ -202,15 +215,20 @@ class Beefy extends PageLinesSection {
 
 		        array(
 		        	'key' => 'beefy_speed',
-					'label' => __('Scrolling speed? (1 is slow, 5 is fast)', 'beefy'),
+					'label' => __('Scrolling speed? (1 is fast, 10 is slow)', 'beefy'),
 					'type' => 'select',
-					'default' => '1',
-					'selectvalues' => array(
-						'1'   => array( 'name' => __('1'	, 'beefy' )),
-						'2'   => array( 'name' => __('2'	, 'beefy' )),
-						'3'   => array( 'name' => __('3'	, 'beefy' )),
-						'4'   => array( 'name' => __('4'	, 'beefy' )),
-						'5'   => array( 'name' => __('5'	, 'beefy' )),
+					'default' => '50000',
+					'opts' => array(
+						'10000'   => array( 'name' => __('1'	, 'beefy' )),
+						'20000'   => array( 'name' => __('2'	, 'beefy' )),
+						'30000'   => array( 'name' => __('3'	, 'beefy' )),
+						'40000'   => array( 'name' => __('4'	, 'beefy' )),
+						'50000'   => array( 'name' => __('5'	, 'beefy' )),						'10000'   => array( 'name' => __('1'	, 'beefy' )),
+						'60000'   => array( 'name' => __('6'	, 'beefy' )),
+						'70000'   => array( 'name' => __('7'	, 'beefy' )),
+						'80000'   => array( 'name' => __('8'	, 'beefy' )),
+						'90000'   => array( 'name' => __('9'	, 'beefy' )),
+						'100000'   => array( 'name' => __('10'	, 'beefy' )),
 					),
 				),
 
@@ -219,7 +237,8 @@ class Beefy extends PageLinesSection {
 					'key' => 'beefy_hover',
 					'label' => __('Pause on hover? (Default: Yes)', 'beefy'),
 					'type' => 'select',
-					'selectvalues' => array(
+					'default' => 'y',
+					'opts' => array(
 						'y'   => array( 'name' => __('Yes'	, 'beefy' )),
 						'n'   => array( 'name' => __('No'	, 'beefy' )),
 					),
@@ -229,9 +248,9 @@ class Beefy extends PageLinesSection {
 					'key' => 'beefy_direction',
 					'label' => __('Direction?', 'beefy'),
 					'type' => 'select',
-					'selectvalues' => array(
-						'forward'   => array( 'name' => __('Forward'	, 'beefy' )),
-						'backwards'   => array( 'name' => __('Backwards'	, 'beefy' )),
+					'opts' => array(
+						'forward'   => array( 'name' => __('Right'	, 'beefy' )),
+						'backwards'   => array( 'name' => __('Left'	, 'beefy' )),
 					),
 				),
 		    )
